@@ -1,0 +1,110 @@
+{
+    "GCN": {
+        "dataset": "Cora",
+        "epochs": 300,
+        "lr": 0.01,
+        "weight_decay": 5e-4,
+        "loss_fn": "nll_loss"
+    },
+    "GCNGraphClassifier": [
+        {
+            "dataset": "ENZYMES",
+            "epochs": 300,
+            "lr": 0.001,
+            "weight_decay": 5e-4,
+            "loss_fn": "cross_entropy"
+        },
+        {
+            "dataset": "IMDB",
+            "epochs": 300,
+            "lr": 0.0005,
+            "weight_decay": 1e-4,
+            "loss_fn": "cross_entropy"
+        }
+        ],
+    "GINModel": {
+        "dataset": "Cora",
+        "epochs": 300,
+        "lr": 0.01,
+        "weight_decay": 5e-4,
+        "loss_fn": "cross_entropy"
+    },
+    "GINGraphClassifier": [
+        {
+            "dataset": "ENZYMES",
+            "epochs": 100,
+            "lr": 0.001,
+            "weight_decay": 5e-4,
+            "loss_fn": "cross_entropy"
+        },
+        {
+            "dataset": "IMDB",
+            "epochs": 100,
+            "lr": 0.001,
+            "weight_decay": 5e-4,
+            "loss_fn": "cross_entropy"
+        }
+    ],
+    "GAT": {
+        "dataset": "Cora",
+        "epochs": 100,
+        "lr": 0.01,
+        "weight_decay": 1e-4,
+        "loss_fn": "cross_entropy"
+    },
+    "GAT_MultiLayer": {
+        "dataset": "Cora",
+        "layer_counts": [2, 3, 4, 5]
+    },
+    "EnhancedGAT": {
+        "dataset": "Cora",
+        "epochs": 100,
+        "lr": 0.001,
+        "weight_decay": 5e-4,
+        "loss_fn": "cross_entropy"
+    },
+    "GATGraphClassifier": [
+        {
+            "dataset": "ENZYMES",
+            "epochs": 100,
+            "lr": 0.001,
+            "weight_decay": 5e-4,
+            "loss_fn": "cross_entropy"
+        },
+        {
+            "dataset": "IMDB",
+            "epochs": 100,
+            "lr": 0.001,
+            "weight_decay": 1e-4,
+            "loss_fn": "cross_entropy"
+        }
+    ],
+    "GCNPeptideStruct": {
+        "dataset": "Peptides-struct",
+        "epochs": 100,
+        "lr": 0.002,
+        "batch_size": 128,
+        "in_channels": 9,
+        "hidden_channels": 64,
+        "out_channels": 5,
+        "loss_fn": "mse_loss"
+    },
+    "GINPeptideStruct": {
+        "dataset": "Peptides-struct",
+        "epochs": 100,
+        "lr": 0.002,
+        "batch_size": 128,
+        "hidden_channels": 64,
+        "out_channels": 5,
+        "loss_fn": "mse_loss"
+    },
+    "GATPeptideStruct": {
+        "dataset": "Peptides-struct",
+        "epochs": 100,
+        "lr": 0.002,
+        "batch_size": 128,
+        "hidden_channels": 64,
+        "out_channels": 5,
+        "loss_fn": "mse_loss"
+    }
+}

@@ -1,0 +1,2 @@
+Final Training MSE: 0.5118
+Final Testing MSE: 0.5922
