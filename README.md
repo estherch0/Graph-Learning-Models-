@@ -17,4 +17,5 @@ DSC 180A Quarter 1 Project
 ## Reference 
 
 The GraphGPS Model is from:
+
 Rampášek, L., Galkin, M., Dwivedi, V. P., Luu, A. T., Wolf, G., & Beaini, D. (2022). Recipe for a general, powerful, scalable graph transformer. Advances in Neural Information Processing Systems, 35. https://github.com/rampasek/GraphGPS 
