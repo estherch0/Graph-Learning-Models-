@@ -1,4 +1,4 @@
-# Graph-Learning-Models-
+# Graph-Learning-Models
 DSC 180A Quarter 1 Project
 
 ## Running the Project
