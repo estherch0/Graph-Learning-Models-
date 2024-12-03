@@ -5,14 +5,15 @@ DSC 180A Quarter 1 Project
 * To install the dependencies, run the following command from the root directory of the project: `pip install -r requirements.txt`
 * To get the results of statistical test, from the project root dir, run `python run.py`
   - This fetches the data, creates all the graph learning models and saves the result of the tests in the /results directory.
+
 * It includes the following results in order:
-- GCN on Cora, ENZYMES, IMDB
-- GIN on Cora, ENZYMES, IMDB
-- GAT on Cora
-- GAT_MultiLayer and each layer amount on Cora
-- Enhanced GAT on Cora
-- GAT on ENZYMES, IMDB
-- GCN, GIN, and GAT on Peptides-struct
+  - GCN on Cora, ENZYMES, IMDB
+  - GIN on Cora, ENZYMES, IMDB
+  - GAT on Cora
+  - GAT_MultiLayer and each layer amount on Cora
+  - Enhanced GAT on Cora
+  - GAT on ENZYMES, IMDB
+  - GCN, GIN, and GAT on Peptides-struct
 
 For the Graph Transformer, I used GraphGPS (referenced below) on all datasets: Cora, ENZYMES, IMDB, and Peptides-struct. The folder "GraphGPS" and the code in it is from that repo. I added the Cora-GPS.yaml, enzyme-GPS.yaml, and imdb-GPS.yaml, and changed the parameters for peptides-struct.yaml. The set up intruction below is also from them:
 
