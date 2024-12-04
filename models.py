@@ -33,6 +33,8 @@ class GCN(torch.nn.Module):
 # let's try making the model use global max instead - highered accuracy for ENZYME dataset 
 # let's try cross entrophy loss - better results (especially for ENZYME)
 # looking at the loss changes in IMDB, there is barely any changes, so let's trying lowering learning rate - increased accuracy by a LOT
+
+
 class GCNGraphClassifier(torch.nn.Module):
     def __init__(self, num_features, num_classes):
         super(GCNGraphClassifier, self).__init__()
@@ -53,6 +55,19 @@ class GCNGraphClassifier(torch.nn.Module):
         x = global_max_pool(x, batch)  # aggregate node features to graph level
         return F.log_softmax(self.fc(x), dim=1)  # log-softmax for multi-class classification
 
+class GCNGraphClassifierIMDB(torch.nn.Module):
+    def __init__(self, num_features, num_classes):
+        super().__init__()
+        self.conv1 = GCNConv(num_features, 16)
+        self.conv2 = GCNConv(16, 16)
+        self.fc = torch.nn.Linear(16, num_classes)
+
+    def forward(self, x, edge_index, batch):
+        x = F.relu(self.conv1(x, edge_index))
+        x = F.relu(self.conv2(x, edge_index))
+        x = global_mean_pool(x, batch)
+        x = self.fc(x)
+        return F.log_softmax(x, dim=1)
 
 # since the training accuracy looks a little high, let's normalize it somehow
 # what about adding batchnorm? - didn't work
@@ -260,6 +275,7 @@ class GATPeptideStruct(torch.nn.Module):
 models = {
     'GCN': GCN,
     'GCNGraphClassifier': GCNGraphClassifier,
+    'GCNGraphClassifierIMDB': GCNGraphClassifierIMDB,
     'GINModel': GINModel,
     'GINGraphClassifier': GINGraphClassifier,
     'GAT': GAT,
