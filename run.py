@@ -12,6 +12,7 @@ import torch_geometric
 from sklearn.model_selection import train_test_split
 from train_utils import (
     train_and_evaluate_node_classification,
+    train_and_evaluate_IMDB_GCN,
     train_and_evaluate,
     train_and_evaluate_gat,
     split_dataset,
@@ -74,7 +75,7 @@ def run_model(model_name, model_class, config, config_index=None):
         data = dataset[0].to(device)
 
     # Initialize model
-    if dataset_name == 'IMDB' or dataset_name == 'IMDB-BINARY':
+    if (dataset_name == 'IMDB' or dataset_name == 'IMDB-BINARY'):
         model = model_class(num_features=1, num_classes=2).to(device)
     elif dataset_name == 'Peptides-struct':
         if model_name == "GCNPeptideStruct":
@@ -91,6 +92,8 @@ def run_model(model_name, model_class, config, config_index=None):
         )
     elif dataset_name == 'Peptides-struct':
         train_losses, test_mse, avg_epoch_loss = train_and_evaluate_peptides_struct(model=model, train_dataset=train_data, test_dataset = test_data, device=device, epochs=config['epochs'], lr = config['lr'], batch_size = config["batch_size"])
+    elif (dataset_name == 'IMDB' or dataset_name == 'IMDB-BINARY') & (model_name == "GCNGraphClassifierIMDB"):
+        train_acc, test_acc, train_losses = train_and_evaluate_IMDB_GCN(dataset, model = model)
     else:
         train_acc, test_acc, train_losses = train_and_evaluate(
             model, train_data, test_data, device, config['loss_fn'], config['epochs'], config['lr'], config['weight_decay']
