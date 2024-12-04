@@ -1,4 +1,0 @@
-Layers: 2, Test Accuracy: 0.7620
-Layers: 3, Test Accuracy: 0.7400
-Layers: 4, Test Accuracy: 0.7730
-Layers: 5, Test Accuracy: 0.6530
