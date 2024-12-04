@@ -6,22 +6,17 @@
         "weight_decay": 5e-4,
         "loss_fn": "nll_loss"
     },
-    "GCNGraphClassifier": [
-        {
+    "GCNGraphClassifier": {
             "dataset": "ENZYMES",
             "epochs": 300,
             "lr": 0.001,
             "weight_decay": 5e-4,
             "loss_fn": "cross_entropy"
         },
-        {
-            "dataset": "IMDB",
-            "epochs": 300,
-            "lr": 0.0005,
-            "weight_decay": 1e-4,
-            "loss_fn": "cross_entropy"
-        }
-        ],
+    "GCNGraphClassifierIMDB": {
+        "dataset": "IMDB",
+        "epochs": 150
+    },
     "GINModel": {
         "dataset": "Cora",
         "epochs": 300,
