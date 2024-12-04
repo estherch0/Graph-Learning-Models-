@@ -21,7 +21,8 @@ def load_planetoid_dataset(name='Cora', root='/tmp/Cora'):
 
 def load_tudataset(name='ENZYMES', root='data'):
     return TUDataset(root=root, name=name)
-    
+
+
 def train_and_evaluate_gat(dataset, device, layer_counts, hidden_dim=16, num_heads=1, lr=0.001, weight_decay=5e-4, epochs=100):
     torch_geometric.seed_everything(50)
     data = dataset[0].to(device)
@@ -54,10 +55,16 @@ def train_and_evaluate_gat(dataset, device, layer_counts, hidden_dim=16, num_hea
 
     # Plotting the results
     layer_counts, accuracies = zip(*results)
-    plt.plot(layer_counts, accuracies, marker='o')
+    plt.figure(figsize=(8, 5))
+    plt.plot(layer_counts, accuracies, marker='o', linestyle='-', color='blue', label='Test Accuracy')
+    plt.ylim(min(accuracies) - 0.02, max(accuracies) + 0.02)  # Add slight padding for clarity
+    plt.xticks(layer_counts)  # Ensure all layers are labeled on x-axis
     plt.xlabel("Number of Layers")
     plt.ylabel("Accuracy")
     plt.title("GAT Accuracy vs. Number of Layers")
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.legend()
+    plt.tight_layout()
     # plt.show()
 
     return results
@@ -104,6 +111,73 @@ def train_and_evaluate_node_classification(model, data, device, criterion=F.nll_
 
     return train_acc, test_acc, train_losses
 
+def train_and_evaluate_IMDB_GCN(dataset, model, epochs = 150):
+    def create_degree_features(data):
+        num_nodes = data.num_nodes
+        degrees = torch.bincount(data.edge_index[0], minlength=num_nodes)
+        
+        feature_vector = degrees.view(-1, 1).float()
+        
+        return feature_vector
+    # Loading Data
+    train_dataset, test_dataset = train_test_split(dataset, test_size=0.2, random_state=42)
+
+    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=32)
+
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+
+    # Training
+    train_losses = []
+    model.train()
+    for epoch in range(epochs):
+        total_loss = 0
+        for data in train_loader:
+            data = data.to(device)
+            optimizer.zero_grad()
+
+            # if no node features we add in the degrees
+            if data.x is None:
+                data.x = create_degree_features(data).to(device)
+
+            out = model(data.x, data.edge_index, data.batch)
+            loss = F.nll_loss(out, data.y)
+            loss.backward()
+            optimizer.step()
+            total_loss += loss.item()
+        print(f"Epoch {epoch+1}, Loss: {total_loss:.4f}")
+        train_losses.append(total_loss)
+
+    # Evaluation
+    model.eval()
+    train_correct = 0
+    train_total = 0
+    for data in train_dataset:
+        if data.x is None:
+            data.x = create_degree_features(data).to(device)
+        data = data.to(device)
+        pred = model(data.x, data.edge_index, data.batch).argmax(dim=1)
+        train_correct += (pred == data.y).sum().item()
+        train_total += data.y.size(0)
+    train_acc = train_correct / train_total
+    correct = 0
+    total = 0
+    for data in test_loader:
+        data = data.to(device)
+
+        # if no node features we add in the degrees
+        if data.x is None:
+            data.x = create_degree_features(data).to(device)
+        out = model(data.x, data.edge_index, data.batch)
+        pred = out.argmax(dim=1)
+        correct += int((pred == data.y).sum())
+        total += data.num_graphs
+    
+    accuracy = correct / total
+    print(f'Train Accuracy: {train_acc:.4f}, Test Accuracy: {accuracy:.4f}')
+    
+    return train_acc, accuracy, train_losses
 
 def train_and_evaluate(model, train_data, test_data, device, criterion = F.nll_loss, epochs=50, lr=0.01, weight_decay=5e-4):
     torch_geometric.seed_everything(50)
@@ -167,7 +241,7 @@ def train_and_evaluate_peptides_struct(model, train_dataset, test_dataset, devic
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=5e-4)
-    criterion = torch.nn.MSELoss()
+    criterion = torch.nn.L1Loss() # Use MAE (Mean Absolute Error)
     
     train_losses = []
     
@@ -202,7 +276,7 @@ def train_and_evaluate_peptides_struct(model, train_dataset, test_dataset, devic
         print(f"Epoch {epoch+1}/{epochs}, Training Loss: {avg_epoch_loss:.4f}")
     
     model.eval()
-    test_mse = 0
+    test_mae = 0
     
     for data in test_loader:
         data = data.to(device)
@@ -211,11 +285,11 @@ def train_and_evaluate_peptides_struct(model, train_dataset, test_dataset, devic
             out = model(x, edge_index, batch)
         
         target = data.y
-        test_mse += torch.nn.MSELoss()(out, target).item()  # mean squared error for regression
+        test_mae += criterion(out, target).item()  # mean squared error for regression
     
-    test_mse /= len(test_loader)
-    print(f'Train MSE: {avg_epoch_loss:.4f}, Test MSE: {test_mse:.4f}')
-    return train_losses, test_mse, avg_epoch_loss
+    test_mae /= len(test_loader)
+    print(f'Train MAE: {avg_epoch_loss:.4f}, Test MAE: {test_mae:.4f}')
+    return train_losses, test_mae, avg_epoch_loss
 
 # Plotting function for training losses
 def plot_losses(train_losses, save_path=None):
