@@ -84,7 +84,7 @@ class GINModel(torch.nn.Module):
         x = self.conv1(x, edge_index).relu()
         x = self.dropout(x)
         x = self.conv2(x, edge_index)
-        return x
+        return F.log_softmax(x, dim=1) # changed
 
 # Simple GINGraphClassifier
 class GINGraphClassifier(torch.nn.Module):
@@ -104,7 +104,7 @@ class GINGraphClassifier(torch.nn.Module):
         x = self.conv2(x, edge_index).relu()
         x = self.pool(x, batch)
         x = self.fc(x)
-        return x
+        return F.log_softmax(x, dim=1) # chnaged
     
 
 # Simple two layed GAT for node classification 
@@ -180,7 +180,7 @@ class GATGraphClassifier(torch.nn.Module):
         x = F.relu(self.conv2(x, edge_index))
         x = self.pool(x, batch)
         x = self.fc(x)
-        return x
+        return F.log_softmax(x, dim=1) # changed
 
 # Long Range Benchmark Models (PeptideStruct)
 class GCNPeptideStruct(torch.nn.Module):
