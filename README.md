@@ -1,5 +1,6 @@
 # Graph-Learning-Models
 DSC 180A Quarter 1 Project
+Report is [HERE](https://drive.google.com/file/d/1OC_nW0afyZglS_-LKrUHUY1SK_rO8Ie4/view?usp=sharing).
 
 ## Running the Project
 * To install the dependencies, run the following command from the root directory of the project: `pip install -r requirements.txt`
